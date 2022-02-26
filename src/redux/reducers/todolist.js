@@ -4,8 +4,6 @@ const initialState = {
   todosList: [],
 };
 
-localStorage.setItem("todos", initialState.todosList);
-
 const TodoReducer = createSlice({
   name: "todoReducer",
   initialState,

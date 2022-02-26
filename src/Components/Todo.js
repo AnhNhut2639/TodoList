@@ -10,7 +10,6 @@ import {
   getTodoCompleted,
   checkAllComplete,
   unCheckAll,
-  checkExistedTodo,
   updateTodo,
 } from "../redux/reducers/todolist";
 import {
@@ -131,7 +130,7 @@ function Todo(props) {
     <>
       <div className="flex flex-col bg-[#f5f5f5] ">
         <div className=" flex mt-6 h-[10vh] items-center justify-center text-[100px] leading-[19.6px] text-[#af2f2f]">
-          <p>Todos List</p>
+          <p>Todo List</p>
         </div>
         <div className=" flex items-start justify-center h-fit  mt-10 drop-shadow-2xl">
           <div className="w-[550px] h-[90vh]">
