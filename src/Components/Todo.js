@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -135,12 +135,12 @@ function Todo(props) {
   return (
     <>
       <div className="flex flex-col bg-[#f5f5f5] ">
-        <div className=" flex mt-6 h-[10vh] items-center justify-center text-[100px] leading-[19.6px] text-[#af2f2f]">
+        <div className="flex mt-6 h-[10vh] items-center justify-center text-[80px] sm:text-[100px] leading-[19.6px]   text-[#af2f2f]">
           <p>Todo List</p>
         </div>
-        <div className=" flex items-start justify-center h-fit  mt-10 drop-shadow-2xl">
-          <div className="w-[550px] h-[90vh]">
-            <div className="w-[550px] h-[62px] flex border-[1px] sticky top-0">
+        <div className=" sm:flex flex items-start justify-center h-fit  mt-10 drop-shadow-2xl">
+          <div className="w-[350px] sm:w-[550px]  h-[90vh]">
+            <div className="w-[350px] sm:w-[550px] h-[62px] flex border-[1px] sticky top-0">
               <div className="bg-white flex items-center justify-center w-[80px]">
                 {isAllCompleted ? (
                   <BsCheckAll size="50px" />
@@ -149,8 +149,7 @@ function Todo(props) {
                 )}
               </div>
               <input
-                id="init"
-                className=" w-[inherit] h-[60px] pl-1 border-none focus:outline-none"
+                className="sm:w-[inherit] w-[350px] h-[60px] pl-1 border-none focus:outline-none"
                 onKeyUp={handleAddTodo}
                 type="text"
                 placeholder="What needs to be done?"
@@ -159,7 +158,7 @@ function Todo(props) {
             {todoList.map((todo) => {
               return (
                 <div
-                  className=" flex items-center  w-[550px] max-h-fit min-h-[66px] border-solid border-[1px] bg-white"
+                  className=" flex items-center  sm:w-[550px] max-h-fit min-h-[66px] border-solid border-[1px] bg-white"
                   key={todo.id}
                 >
                   <div className="grow-[0.1]  h-fit w-6 flex items-center justify-center">
@@ -218,8 +217,8 @@ function Todo(props) {
             <div
               className={`${
                 todoList.length <= 0 ? "hidden" : ""
-              }  flex flex-row w-[550px] pb-5 h-[50px] pl-2 bg-white border-solid border-2
-                sticky bottom-0 mb-3 
+              }  flex flex-row items-center sm:w-[550px]  h-[50px] pl-2 bg-white border-solid border-2
+                sticky bottom-0 mb-3  
               
               `}
             >
@@ -229,14 +228,14 @@ function Todo(props) {
               {isAllCompleted ? (
                 <button
                   onClick={() => handleUnCheckAll()}
-                  className="ml-[100px] mr-[10px] hover:font-medium"
+                  className="sm:ml-[70px] ml-[30px] mr-[10px] hover:font-medium"
                 >
                   Uncheck all
                 </button>
               ) : (
                 <button
                   onClick={() => handleCheckAllCompleted()}
-                  className="ml-[70px] mr-[10px] hover:font-medium"
+                  className="sm:ml-[70px] ml-[30px] mr-[10px] hover:font-medium"
                 >
                   Check All
                 </button>
