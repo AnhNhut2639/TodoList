@@ -76,6 +76,15 @@ const TodoReducer = createSlice({
         todo.content = newContent;
       }
     },
+    unCheckTodoCompleted(state, action) {
+      state.todosList = state.todosList.map((todo) => {
+        return {
+          id: todo.id,
+          content: todo.content,
+          completed: false,
+        };
+      });
+    },
   },
 });
 
@@ -90,5 +99,6 @@ export const {
   unCheckAll,
   checkExistedTodo,
   updateTodo,
+  unCheckTodoCompleted,
 } = TodoReducer.actions;
 export default TodoReducer.reducer;

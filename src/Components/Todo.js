@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -11,6 +11,7 @@ import {
   checkAllComplete,
   unCheckAll,
   updateTodo,
+  unCheckTodoCompleted,
 } from "../redux/reducers/todolist";
 import {
   BsCheckAll,
@@ -21,20 +22,21 @@ import {
 import { FaRegTrashAlt, FaEdit } from "react-icons/fa";
 
 function Todo(props) {
-  const todoList = useSelector((state) => state.todo.todosList);
+  let todoList = useSelector((state) => state.todo.todosList);
 
   const countUncompleted = todoList.filter((item) => item.completed === false);
 
-  const isAllTrue = todoList.every((todo) => todo.completed === true);
+  const isAllCompleted = todoList.every((todo) => todo.completed === true);
   const isSomeCompleted = todoList.some((todo) => todo.completed === true);
 
   const dispatch = useDispatch();
 
   const handleAddTodo = (e) => {
     const value = e.target.value;
+    let spaceCatch = value.trim();
     let isExist = todoList.some((todo) => todo.content === value);
     if (e.keyCode === 13) {
-      if (value === "") {
+      if (value === "" || spaceCatch === "") {
         alert("Please type something");
         return;
       }
@@ -126,6 +128,10 @@ function Todo(props) {
     }
   };
 
+  const HandleUnCheckCompleted = () => {
+    dispatch(unCheckTodoCompleted());
+  };
+
   return (
     <>
       <div className="flex flex-col bg-[#f5f5f5] ">
@@ -136,13 +142,10 @@ function Todo(props) {
           <div className="w-[550px] h-[90vh]">
             <div className="w-[550px] h-[62px] flex border-[1px] sticky top-0">
               <div className="bg-white flex items-center justify-center w-[80px]">
-                {isAllTrue ? (
-                  <BsCheckAll size="50px" onClick={() => handleUnCheckAll()} />
+                {isAllCompleted ? (
+                  <BsCheckAll size="50px" />
                 ) : (
-                  <BsCheckLg
-                    size="30px"
-                    onClick={() => handleCheckAllCompleted()}
-                  />
+                  <BsCheckLg size="30px" />
                 )}
               </div>
               <input
@@ -215,31 +218,47 @@ function Todo(props) {
             <div
               className={`${
                 todoList.length <= 0 ? "hidden" : ""
-              }  flex flex-row items-center w-[550px] h-[33px] pl-2 bg-white border-solid border-2`}
+              }  flex flex-row w-[550px] pb-5 h-[50px] pl-2 bg-white border-solid border-2
+                sticky bottom-0 mb-3 
+              
+              `}
             >
               {countUncompleted.length <= 1
                 ? `${countUncompleted.length} item left`
                 : `${countUncompleted.length} items left`}
-              <button
-                onClick={() => handleGetAllTodo()}
-                className="ml-[100px] mr-[10px] focus:border-2 focus:p-1"
-              >
-                All
-              </button>
-              <button
-                onClick={() => handleGetTodoUncompleted()}
-                className="mr-[10px] focus:border-2 focus:p-1 "
-              >
-                Active
-              </button>
-              <button
-                onClick={() => handleGetTodoCompleted()}
-                className="mr-[40px] focus:border-2 focus:p-1"
-              >
-                Completed
-              </button>
+              {isAllCompleted ? (
+                <button
+                  onClick={() => handleUnCheckAll()}
+                  className="ml-[100px] mr-[10px] hover:font-medium"
+                >
+                  Uncheck all
+                </button>
+              ) : (
+                <button
+                  onClick={() => handleCheckAllCompleted()}
+                  className="ml-[70px] mr-[10px] hover:font-medium"
+                >
+                  Check All
+                </button>
+              )}
+              {isSomeCompleted && !isAllCompleted ? (
+                <button
+                  className="mr-[10px] hover:font-medium"
+                  onClick={HandleUnCheckCompleted}
+                >
+                  Uncheck completed
+                </button>
+              ) : (
+                ""
+              )}
+
               {isSomeCompleted ? (
-                <button onClick={handleClearCompleted}>Clear completed</button>
+                <button
+                  onClick={handleClearCompleted}
+                  className="hover:font-medium"
+                >
+                  Clear completed
+                </button>
               ) : (
                 ""
               )}
