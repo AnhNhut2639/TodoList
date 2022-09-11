@@ -33,7 +33,6 @@ const TodoReducer = createSlice({
         (todo) => todo.completed === true
       );
     },
-
     getAllTodo(state, action) {
       state.todosList = state.todosList.filter((todo) => todo.id.length > 1);
     },
