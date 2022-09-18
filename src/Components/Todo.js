@@ -133,7 +133,7 @@ function Todo(props) {
     <>
       <div className="flex flex-col bg-[#f5f5f5] ">
         <div className="flex mt-6 h-[10vh] items-center justify-center text-[80px] sm:text-[100px] leading-[19.6px]   text-[#af2f2f]">
-          <p>Todo List</p>
+          <p>Todo Lists</p>
         </div>
         <div className=" sm:flex flex items-start justify-center h-fit  mt-10 drop-shadow-2xl">
           <div className="w-[350px] sm:w-[550px]  h-[90vh]">
