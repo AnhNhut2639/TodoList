@@ -1,25 +1,22 @@
-import React from "react";
-import { v4 as uuidv4 } from "uuid";
+import React, { useEffect, useState } from "react";
+import {
+  BsCheck2Circle,
+  BsCheckAll,
+  BsCheckLg,
+  BsCircle,
+} from "react-icons/bs";
+import { FaEdit, FaRegTrashAlt } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
 import {
   addTodo,
-  setCompleted,
   deleteTodo,
-  getTodoUncompleted,
   getAllTodo,
-  getTodoCompleted,
-  checkAllComplete,
-  unCheckAll,
+  getTodoUncompleted,
+  setCompleted,
   updateTodo,
-  unCheckTodoCompleted,
 } from "../redux/reducers/todolist";
-import {
-  BsCheckAll,
-  BsCheck2Circle,
-  BsCircle,
-  BsCheckLg,
-} from "react-icons/bs";
-import { FaRegTrashAlt, FaEdit } from "react-icons/fa";
+import { saveToken } from "../helpers";
 
 function Todo(props) {
   let todoList = useSelector((state) => state.todo.todosList);
@@ -28,9 +25,12 @@ function Todo(props) {
 
   const isAllCompleted = todoList.every((todo) => todo.completed === true);
   const isSomeCompleted = todoList.some((todo) => todo.completed === true);
+  const [arrTodos, setArrTodos] = useState([]);
 
+  useEffect(() => {
+    setArrTodos(todoList);
+  }, [todoList]);
   const dispatch = useDispatch();
-
   const handleAddTodo = (e) => {
     const value = e.target.value;
     let spaceCatch = value.trim();
@@ -49,14 +49,13 @@ function Todo(props) {
           content: value,
           completed: false,
         };
-
+        saveToken(newTodo);
         dispatch(addTodo(newTodo));
       }
 
       e.target.value = "";
     }
   };
-
   const handleSetCompleted = (todo) => {
     dispatch(setCompleted(todo.id));
   };
@@ -66,7 +65,11 @@ function Todo(props) {
   };
 
   const handleGetTodoUncompleted = () => {
-    dispatch(getTodoUncompleted());
+    // dispatch(getTodoUncompleted());
+    const todosUncompleted = todoList.filter(
+      (todo) => todo.completed === false
+    );
+    setArrTodos(todosUncompleted);
   };
 
   const handleGetAllTodo = () => {
@@ -74,17 +77,10 @@ function Todo(props) {
   };
 
   const handleGetTodoCompleted = () => {
-    dispatch(getTodoCompleted());
+    // dispatch(getTodoCompleted());
+    const todosCompleted = todoList.filter((todo) => todo.completed === true);
+    setArrTodos(todosCompleted);
   };
-
-  const handleCheckAllCompleted = () => {
-    dispatch(checkAllComplete());
-  };
-
-  const handleUnCheckAll = () => {
-    dispatch(unCheckAll());
-  };
-
   const handleClearCompleted = () => {
     dispatch(getTodoUncompleted());
   };
@@ -110,6 +106,7 @@ function Todo(props) {
 
   const handleUpdate = (e, todo) => {
     const value = e.target.value;
+    let isExist = todoList.some((todo) => todo.content === value);
     if (value.length === 0) {
       document.getElementById(todo.id).removeAttribute("placeholder");
     }
@@ -117,8 +114,13 @@ function Todo(props) {
       id: todo.id,
       newContent: value,
     };
-
     if (e.keyCode === 13) {
+      if (isExist) {
+        alert("Active already exist");
+        document.getElementById(todo.id).value = todo.content;
+        return;
+      }
+
       if (value.length === 0) {
         dispatch(deleteTodo(todo.id));
       } else {
@@ -127,11 +129,6 @@ function Todo(props) {
       }
     }
   };
-
-  const HandleUnCheckCompleted = () => {
-    dispatch(unCheckTodoCompleted());
-  };
-
   return (
     <>
       <div className="flex flex-col bg-[#f5f5f5] ">
@@ -155,10 +152,10 @@ function Todo(props) {
                 placeholder="What needs to be done?"
               ></input>
             </div>
-            {todoList.map((todo) => {
+            {arrTodos.map((todo) => {
               return (
                 <div
-                  className=" flex items-center  sm:w-[550px] max-h-fit min-h-[66px] border-solid border-[1px] bg-white"
+                  className=" flex items-center sm:w-[550px] max-h-fit min-h-[66px] border-solid border-[1px] bg-white"
                   key={todo.id}
                 >
                   <div className="grow-[0.1]  h-fit w-6 flex items-center justify-center">
@@ -217,50 +214,45 @@ function Todo(props) {
             <div
               className={`${
                 todoList.length <= 0 ? "hidden" : ""
-              }  flex flex-row items-center sm:w-[550px]  h-[50px] pl-2 bg-white border-solid border-2
-                sticky bottom-0 mb-3  
+              }  flex justify-between items-center sm:w-[550px] h-[50px] bg-white pl-2 border-solid border-2
+                sticky bottom-0 mb-3 
               
               `}
             >
-              {countUncompleted.length <= 1
-                ? `${countUncompleted.length} item left`
-                : `${countUncompleted.length} items left`}
-              {isAllCompleted ? (
+              <div className="w-1/4">
+                {countUncompleted.length <= 1
+                  ? `${countUncompleted.length} item left`
+                  : `${countUncompleted.length} items left`}
+              </div>
+              <div className="w-2/4 flex items-center justify-around">
                 <button
-                  onClick={() => handleUnCheckAll()}
-                  className="sm:ml-[70px] ml-[30px] mr-[10px] hover:font-medium"
-                >
-                  Uncheck all
-                </button>
-              ) : (
-                <button
-                  onClick={() => handleCheckAllCompleted()}
-                  className="sm:ml-[70px] ml-[30px] mr-[10px] hover:font-medium"
-                >
-                  Check All
-                </button>
-              )}
-              {isSomeCompleted && !isAllCompleted ? (
-                <button
-                  className="mr-[10px] hover:font-medium"
-                  onClick={HandleUnCheckCompleted}
-                >
-                  Uncheck completed
-                </button>
-              ) : (
-                ""
-              )}
-
-              {isSomeCompleted ? (
-                <button
-                  onClick={handleClearCompleted}
                   className="hover:font-medium"
+                  onClick={() => handleGetAllTodo()}
                 >
-                  Clear completed
+                  All
                 </button>
-              ) : (
-                ""
-              )}
+                <button
+                  className="hover:font-medium"
+                  onClick={() => handleGetTodoUncompleted()}
+                >
+                  Active
+                </button>
+                <button
+                  className="hover:font-medium"
+                  onClick={() => handleGetTodoCompleted()}
+                >
+                  Completed
+                </button>
+              </div>
+              <div className="w-1/4">
+                {isSomeCompleted ? (
+                  <button onClick={handleClearCompleted} className="as">
+                    Clear completed
+                  </button>
+                ) : (
+                  ""
+                )}
+              </div>
             </div>
           </div>
         </div>
