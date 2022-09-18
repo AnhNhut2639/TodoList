@@ -41,7 +41,7 @@ function Todo(props) {
         return;
       }
       if (isExist) {
-        alert("Active already exist");
+        alert("Active already exist !!!");
         return;
       } else {
         const newTodo = {
