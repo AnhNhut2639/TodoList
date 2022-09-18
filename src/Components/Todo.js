@@ -16,6 +16,7 @@ import {
   setCompleted,
   updateTodo,
 } from "../redux/reducers/todolist";
+import { saveToken } from "../helpers";
 
 function Todo(props) {
   let todoList = useSelector((state) => state.todo.todosList);
@@ -24,12 +25,11 @@ function Todo(props) {
 
   const isAllCompleted = todoList.every((todo) => todo.completed === true);
   const isSomeCompleted = todoList.some((todo) => todo.completed === true);
-
   const [arrTodos, setArrTodos] = useState([]);
+
   useEffect(() => {
     setArrTodos(todoList);
   }, [todoList]);
-
   const dispatch = useDispatch();
   const handleAddTodo = (e) => {
     const value = e.target.value;
@@ -49,14 +49,13 @@ function Todo(props) {
           content: value,
           completed: false,
         };
-
+        saveToken(newTodo);
         dispatch(addTodo(newTodo));
       }
 
       e.target.value = "";
     }
   };
-
   const handleSetCompleted = (todo) => {
     dispatch(setCompleted(todo.id));
   };
